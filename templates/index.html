@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+
+{% block title %}Home - GreenScape{% endblock %}
+
+{% block content %}
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }} mt-3">{{ message }}</div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+<!-- HERO SECTION -->
+<section class="hero-elegant">
+  <div class="hero-bg-zoom"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <h1>Smart Plant Care Starts at Home 🌿</h1>
+    <p>Keep your home garden healthy with timely watering insights.</p>
+
+  </div>
+</section>
+
+<!-- DASHBOARD TITLE -->
+<section class="dashboard-header">
+  <h2>My Garden Dashboard</h2>
+  <p>Quick glance at your plants and watering schedule</p>
+</section>
+
+<!-- SUMMARY CARDS -->
+<section class="summary">
+  <div class="summary-card">
+    <h3>
+      <span class="count" data-target="{{ plants|length }}">0</span>
+    </h3>
+    <p class="card-title">Total Plants</p>
+  </div>
+  <div class="summary-card">
+    <h3>
+      <span class="count" data-target="{{ plants | selectattr('next_watering','equalto',today) | list | length }}">0</span>
+    </h3>
+    <p class="card-title">Water Today 💧</p>
+  </div>
+  <div class="summary-card">
+    <h3>
+      <span class="count" data-target="{{ plants | selectattr('next_watering','lt',today) | list | length }}">0</span>
+    </h3>
+    <p class="card-title">Overdue ⚠</p>
+  </div>
+
+</section>
+<!-- Filter section -->
+<div class="filter-wrapper">
+
+    <div class="filter-section">
+        <h3 class="filter-title">Filter Plants</h3>
+
+        <form method="GET" action="{{ url_for('index') }}" class="filter-form">
+
+            <input type="text"
+                   name="search"
+                   placeholder="Search by plant name..."
+                   value="{{ request.args.get('search','') }}">
+
+            <select name="type">
+                <option value="">Plant Type</option>
+                <option value="Indoor">Indoor</option>
+                <option value="Outdoor">Outdoor</option>
+                <option value="Succulent">Succulent</option>
+            </select>
+
+            <select name="frequency">
+                <option value="">Watering Frequency</option>
+                <option value="Daily">Daily</option>
+                <option value="Weekly">Weekly</option>
+                <option value="Monthly">Monthly</option>
+            </select>
+
+            <button type="submit" class="filter-btn">Apply</button>
+
+            <a href="{{ url_for('index') }}" class="clear-btn">
+                Clear
+            </a>
+
+        </form>
+    </div>
+
+</div>
+
+
+<!-- Plant Table -->
+<div class="table-responsive mt-4">
+<div class="d-flex justify-content-between align-items-center my-3">
+
+    <!-- Page Title or Filter Info -->
+    <h3 class="mb-0">Plant List</h3>
+
+    <!-- Add Plant Button -->
+    <a href="{{ url_for('add_plant') }}" class="mx-2 btn btn-success add-plant-btn">
+        <i class="fas fa-plus"></i> Add Plant
+    </a>
+
+</div>
+
+
+<!-- Plant List-->
+    <table class="table table-bordered table-hover align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Frequency</th>
+                <th>Next Watering</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+{% for plant in plants %}
+<tr>
+    <!-- Small Image -->
+    <td>
+        {% if plant.plant_image %}
+        <img src="{{ url_for('static', filename='uploads/' + plant.plant_image) }}"
+             class="table-plant-img" alt="Plant Image">
+        {% else %}
+        N/A
+        {% endif %}
+    </td>
+
+    <td>{{ plant.plant_name }}</td>
+    <td>{{ plant.plant_type }}</td>
+    <td>{{ plant.watering_frequency }} days</td>
+    <td>{{ plant.next_watering }}</td>
+
+    <td>
+        {% if plant.next_watering < today %}
+        <span class="badge bg-danger">Overdue</span>
+        {% else %}
+        <span class="badge bg-success">Healthy</span>
+        {% endif %}
+    </td>
+
+    <td class="action-icons">
+        <!-- View icon → redirect to Add Plant page -->
+          <a href="{{ url_for('add_plant') }}#viewPlantsSection" title="View Plants">
+              <i class="fas fa-eye"></i>
+          </a>
+        <!-- Edit Icon triggers modal -->
+        <a href="#" data-bs-toggle="modal" data-bs-target="#editModal{{ plant.id }}" title="Edit">
+            <i class="fas fa-pencil"></i>
+        </a>
+
+        <!-- Delete Icon triggers modal -->
+        <a href="#" data-bs-toggle="modal" data-bs-target="#deleteModal{{ plant.id }}" title="Delete">
+            <i class="fas fa-trash"></i>
+        </a>
+    </td>
+</tr>
+
+<!-- Edit Modal with 2-column grid -->
+<div class="modal fade" id="editModal{{ plant.id }}" tabindex="-1" aria-labelledby="editModalLabel{{ plant.id }}" aria-hidden="true">
+  <div class="modal-dialog modal-lg"> <!-- Large modal -->
+    <div class="modal-content">
+      <form method="POST" action="{{ url_for('edit_plant', id=plant.id) }}" enctype="multipart/form-data">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editModalLabel{{ plant.id }}">Edit {{ plant.plant_name }}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Plant Name</label>
+                <input type="text" name="plant_name" class="form-control" value="{{ plant.plant_name }}" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Plant Type</label>
+                <input type="text" name="plant_type" class="form-control" value="{{ plant.plant_type }}" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Watering Frequency (days)</label>
+                <input type="number" name="watering_frequency" class="form-control" value="{{ plant.watering_frequency }}" min="1" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Next Watering Date</label>
+                <input type="date" name="next_watering" class="form-control" value="{{ plant.next_watering }}" required>
+              </div>
+              <div class="col-md-12">
+                <label class="form-label">Plant Image</label>
+                <input type="file" name="plant_image" class="form-control">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-end">
+          <button type="submit" class="btn btn-primary me-2">Update</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal{{ plant.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ plant.id }}" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel{{ plant.id }}">Delete {{ plant.plant_name }}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete <strong>{{ plant.plant_name }}</strong>?
+      </div>
+      <div class="modal-footer d-flex justify-content-end">
+        <a href="{{ url_for('delete_plant', id=plant.id) }}" class="btn btn-danger me-2">Delete</a>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endfor %}
+</tbody>
+
+    </table>
+
+    <!-- pagination -->
+    {% if total_pages > 1 %}
+<nav aria-label="Page navigation" class="mt-4">
+  <ul class="pagination justify-content-center">
+
+    <!-- Previous Page -->
+    <li class="page-item {% if page == 1 %}disabled{% endif %}">
+      <a class="page-link" href="{{ url_for('index', page=page-1, search=search, type=plant_type, status=status) }}">
+        Previous
+      </a>
+    </li>
+
+    <!-- Page Numbers -->
+    {% for p in range(1, total_pages + 1) %}
+    <li class="page-item {% if p == page %}active{% endif %}">
+      <a class="page-link" href="{{ url_for('index', page=p, search=search, type=plant_type, status=status) }}">
+        {{ p }}
+      </a>
+    </li>
+    {% endfor %}
+
+    <!-- Next Page -->
+    <li class="page-item {% if page == total_pages %}disabled{% endif %}">
+      <a class="page-link" href="{{ url_for('index', page=page+1, search=search, type=plant_type, status=status) }}">
+        Next
+      </a>
+    </li>
+
+  </ul>
+</nav>
+{% endif %}
+
+</div>
+
+
+{% endblock %}

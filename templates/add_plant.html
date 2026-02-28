@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block title %}Add Plant{% endblock %}
+
+{% block content %}
+
+<section class="form-section">
+  <div class="form-container">
+    <h2>Add New Plant</h2>
+
+    <form method="POST" enctype="multipart/form-data" class="plant-form">
+      <div class="form-grid">
+
+        <div class="form-group">
+          <label>Plant Name</label>
+          <input type="text" name="plant_name" required>
+        </div>
+
+        <div class="form-group">
+          <label>Plant Type</label>
+          <input type="text" name="plant_type" required>
+        </div>
+
+        <div class="form-group">
+          <label>Watering Frequency (days)</label>
+          <input type="number" name="watering_frequency" required>
+        </div>
+
+        <div class="form-group">
+          <label>Next Watering Date</label>
+          <input type="date" name="next_watering" required>
+        </div>
+
+        <!-- FULL WIDTH FIELD -->
+        <div class="form-group full-width">
+          <label>Upload Plant Image</label>
+          <input type="file" name="plant_image">
+        </div>
+
+      </div>
+
+      <button type="submit" class="btn-primary">
+        Add Plant
+      </button>
+    </form>
+  </div>
+</section>
+
+<hr class="mx-5">
+<!-- View Plants Section -->
+
+<section id="viewPlantsSection" class="cards-section">
+  <h3 class="mb-3">View Plants</h3>
+  <div class="card-grid">
+      {% for plant in plants %}
+    <div class="plant-card">
+
+      {% if plant.plant_image %}
+      <img src="{{ url_for('static', filename='uploads/' + plant.plant_image) }}" class="plant-img">
+      {% endif %}
+
+      <h3>{{ plant.plant_name }}</h3>
+      <p>{{ plant.plant_type }}</p>
+
+      {% if plant.next_watering < today %}
+      <span class="status overdue">Overdue</span>
+      {% else %}
+      <span class="status healthy">Healthy</span>
+      {% endif %}
+
+      <div class="btn-group">
+        <!-- Edit triggers modal -->
+        <a href="#" class="edit-btn" data-bs-toggle="modal" data-bs-target="#editModal{{ plant.id }}">
+          Edit
+        </a>
+
+        <!-- Delete triggers modal -->
+        <a href="#" class="delete-btn" data-bs-toggle="modal" data-bs-target="#deleteModal{{ plant.id }}">
+          Delete
+        </a>
+      </div>
+
+    </div>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModal{{ plant.id }}" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <form method="POST" action="{{ url_for('edit_plant', id=plant.id) }}" enctype="multipart/form-data">
+            <div class="modal-header">
+              <h5 class="modal-title">Edit {{ plant.plant_name }}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+              <div class="container-fluid">
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label class="form-label">Plant Name</label>
+                    <input type="text" name="plant_name" class="form-control" value="{{ plant.plant_name }}" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Plant Type</label>
+                    <input type="text" name="plant_type" class="form-control" value="{{ plant.plant_type }}" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Watering Frequency</label>
+                    <input type="number" name="watering_frequency" class="form-control" value="{{ plant.watering_frequency }}" min="1" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label class="form-label">Next Watering Date</label>
+                    <input type="date" name="next_watering" class="form-control" value="{{ plant.next_watering }}" required>
+                  </div>
+                  <div class="col-md-12">
+                    <label class="form-label">Plant Image</label>
+                    <input type="file" name="plant_image" class="form-control">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer d-flex justify-content-end">
+              <button type="submit" class="btn btn-primary me-2">Update</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Modal -->
+    <div class="modal fade" id="deleteModal{{ plant.id }}" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Delete {{ plant.plant_name }}</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            Are you sure you want to delete <strong>{{ plant.plant_name }}</strong>?
+          </div>
+          <div class="modal-footer d-flex justify-content-end">
+            <a href="{{ url_for('delete_plant', id=plant.id) }}" class="btn btn-danger me-2">Delete</a>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% endfor %}
+
+  </div>
+</section>
+
+{% endblock %}

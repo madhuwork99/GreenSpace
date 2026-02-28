@@ -1,0 +1,93 @@
+{% extends "base.html" %}  <!-- MUST be the very first line -->
+
+{% block title %}Edit Plant{% endblock %}
+
+{% block content %}
+<section class="form-section py-4">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h2 class="card-title mb-4 text-center">Edit Plant 🌿</h2>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <form method="POST" enctype="multipart/form-data">
+
+              <!-- Plant Name -->
+              <div class="mb-3">
+                <label class="form-label">Plant Name</label>
+                <input type="text" name="plant_name" class="form-control"
+                       value="{{ plant.plant_name }}" required>
+              </div>
+
+              <!-- Plant Type -->
+              <div class="mb-3">
+                <label class="form-label">Plant Type</label>
+                <input type="text" name="plant_type" class="form-control"
+                       value="{{ plant.plant_type }}" required>
+              </div>
+
+              <!-- Watering Frequency -->
+              <div class="mb-3">
+                <label class="form-label">Watering Frequency (days)</label>
+                <input type="number" name="watering_frequency" class="form-control"
+                       value="{{ plant.watering_frequency }}" required min="1">
+              </div>
+
+              <!-- Next Watering Date -->
+              <div class="mb-3">
+                <label class="form-label">Next Watering Date</label>
+                <input type="date" name="next_watering" class="form-control"
+                       value="{{ plant.next_watering }}" required>
+              </div>
+
+              <!-- Current Image Preview -->
+              <div class="mb-3">
+                <label class="form-label">Current Image</label><br>
+                {% if plant.plant_image %}
+                  <img src="{{ url_for('static', filename='uploads/' + plant.plant_image) }}"
+                       alt="Plant Image" class="img-thumbnail mb-2" style="max-width: 200px;">
+                {% else %}
+                  <p>No image uploaded.</p>
+                {% endif %}
+              </div>
+
+              <!-- Upload New Image -->
+              <div class="mb-3">
+                <label class="form-label">Change Plant Image</label>
+                <input type="file" name="plant_image" class="form-control">
+              </div>
+
+              <!-- Submit / Cancel -->
+              <div class="d-flex justify-content-between mt-3 align-items-stretch">
+                <button type="submit" class="btn btn-primary flex-fill me-2">
+                  Update Plant
+                </button>
+                <a href="{{ url_for('index') }}" class="btn btn-secondary flex-fill ms-2">
+                  Cancel
+                </a>
+              </div>
+
+            </form>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

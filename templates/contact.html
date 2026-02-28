@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block title %}Contact Us - GreenScape{% endblock %}
+
+{% block content %}
+<section class="form-section py-4">
+  <div class="container">
+    <div class="row justify-content-center">
+
+      <!-- Contact Form -->
+      <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+          <div class="card-body">
+            <h2 class="card-title mb-4 text-center">Contact Us 📬</h2>
+
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <form method="POST">
+
+              <div class="mb-3">
+                <label class="form-label">Name</label>
+                <input type="text" name="name" class="form-control" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Phone</label>
+                <input type="text" name="phone" class="form-control" >
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Message</label>
+                <textarea name="message" class="form-control" rows="5" required></textarea>
+              </div>
+
+              <div class="d-flex justify-content-between mt-3">
+                <button type="submit" class="btn btn-primary flex-fill me-2">Send Message</button>
+                <a href="{{ url_for('index') }}" class="btn btn-secondary flex-fill ms-2">Cancel</a>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact Info & Map -->
+      <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+          <div class="card-body">
+            <h2 class="card-title mb-4 text-center">Get in Touch 🌿</h2>
+
+            <div class="mb-3">
+              <h5>Address</h5>
+              <p>123 Green Street, Plant City, USA</p>
+            </div>
+
+            <div class="mb-3">
+              <h5>Email</h5>
+              <p>support@greenscape.com</p>
+            </div>
+
+            <div class="mb-3">
+              <h5>Phone</h5>
+              <p>+1 (555) 123-4567</p>
+            </div>
+
+            <div class="map-container mt-3">
+              <!-- Google Map Embed -->
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3153.019422201194!2d-122.41941508468102!3d37.77492977975959!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8085809c1d3f2f33%3A0x7c3e2f8bbf1e1e8e!2sSan+Francisco%2C+CA!5e0!3m2!1sen!2sus!4v1600000000000!5m2!1sen!2sus"
+                width="100%" height="250" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+{% endblock %}
