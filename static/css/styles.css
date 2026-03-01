@@ -130,6 +130,19 @@ main {
 html, body {
   overflow-x: hidden;
 }
+/* Flash Overlay */
+.flash-overlay {
+  position: absolute;
+  top: 20px;           /* distance from top of hero */
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;         /* higher than all hero layers */
+  width: 90%;
+  max-width: 600px;
+  text-align: center;
+}
+
+/* Keep hero layers intact */
 .hero-elegant {
   position: relative;
   height: 50vh;
@@ -138,6 +151,7 @@ html, body {
   align-items: center;
   justify-content: center;
 }
+
 .hero-bg-zoom {
   position: absolute;
   width: 100%;
@@ -146,6 +160,7 @@ html, body {
   z-index: 1;
   animation: heroZoom 20s ease-in-out infinite alternate;
 }
+
 .hero-overlay {
   position: absolute;
   width: 100%;
@@ -153,26 +168,16 @@ html, body {
   background: linear-gradient(to right, rgb(0 0 0 / 22%), rgba(0, 0, 0, 0.2));
   z-index: 2;
 }
+
 .hero-content {
   position: relative;
-  z-index: 3;
-  /*max-width: 600px;*/
-  text-align: left;
+  z-index: 3;  /* below flash */
+  text-align: center;
   color: #fff;
   backdrop-filter: blur(5px);
   background: rgba(255,255,255,0.1);
   padding: 40px;
   border-radius: 15px;
-}
-
-.hero-content h1 {
-  font-size: 48px;
-  margin-bottom: 20px;
-}
-
-.hero-content p {
-  font-size: 18px;
-  margin-bottom: 30px;
 }
 
 @keyframes heroZoom {
@@ -588,13 +593,14 @@ text-decoration:none;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 30px;
-  padding: 80px 8%;
+  padding: 30px 8%;
 }
 
 .card {
   background: #ffffff;
   border-radius: 20px;
   padding: 30px;
+  margin-bottom: 30px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
   transition: all 0.3s ease;
   border: 1px solid #e8f5e9;
@@ -611,7 +617,7 @@ text-decoration:none;
   font-size: 2rem;
   font-weight: 500;
   color: #2e7d32;
-  margin-bottom: 50px;
+  margin-top: 50px;
   position: relative;
 }
 
@@ -641,7 +647,7 @@ text-decoration:none;
 .form-section {
   display: flex;
   justify-content: center;
-  padding: 60px 20px 5px;
+  padding: 10px 20px 5px;
 }
 
 .form-container {
