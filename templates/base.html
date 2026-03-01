@@ -38,12 +38,18 @@
       <li><a href="{{ url_for('add_plant') }}">Add Plant</a></li>
       <li><a href="{{ url_for('services') }}">Services</a></li>
       <li><a href="{{ url_for('contact') }}">Contact</a></li>
+      {% if session.get('admin_logged_in') %}
+          <li><a href="{{ url_for('view_notifications') }}">Notifications</a></li>
+          <li><a href="{{ url_for('logout') }}">Logout</a></li>
+        {% else %}
+            <li><a href="{{ url_for('admin_login') }}">Admin</a></li>
+        {% endif %}
     </ul>
   </nav>
     </span>
 </header>
 
-<main>
+<main class="mt-5">
     {% block content %}{% endblock %}
 </main>
 

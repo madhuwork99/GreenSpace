@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Notifications Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <h2 class="mb-4 text-center">📊 Notification History</h2>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            <table class="table table-bordered table-hover text-center align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Type</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for n in notifications %}
+                    <tr>
+                        <td>{{ n.customer_name }}</td>
+                        <td>{{ n.email }}</td>
+                        <td>{{ n.phone }}</td>
+                        <td>{{ n.notification_type }}</td>
+
+                        <!-- Status Badge -->
+                        <td>
+                            {% if n.status == "Sent" %}
+                                <span class="badge bg-success">Sent</span>
+                            {% else %}
+                                <span class="badge bg-danger">Failed</span>
+                            {% endif %}
+                        </td>
+
+                        <td>{{ n.created_at }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

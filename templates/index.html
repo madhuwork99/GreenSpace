@@ -4,23 +4,34 @@
 
 {% block content %}
 
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% if messages %}
-    {% for category, message in messages %}
-      <div class="alert alert-{{ category }} mt-3">{{ message }}</div>
-    {% endfor %}
-  {% endif %}
-{% endwith %}
+<section class="hero-elegant position-relative">
 
-<!-- HERO SECTION -->
-<section class="hero-elegant">
+  <!-- Flash Overlay -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-overlay">
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <!-- Hero Background Zoom Layer -->
   <div class="hero-bg-zoom"></div>
-  <div class="hero-overlay"></div>
-  <div class="hero-content">
-    <h1>Smart Plant Care Starts at Home 🌿</h1>
-    <p>Keep your home garden healthy with timely watering insights.</p>
 
+  <!-- Hero Overlay (semi-transparent layer) -->
+  <div class="hero-overlay"></div>
+
+  <!-- Hero Content -->
+  <div class="hero-content text-center">
+    <h1>Welcome to GreenScape 🌿</h1>
+    <p>Your smart gardening manager</p>
   </div>
+
 </section>
 
 <!-- DASHBOARD TITLE -->
@@ -263,5 +274,10 @@
 
 </div>
 
-
+<script>
+  setTimeout(function() {
+    const alerts = document.querySelectorAll('.flash-overlay .alert');
+    alerts.forEach(alert => alert.classList.remove('show'));
+  }, 4000);
+</script>
 {% endblock %}
